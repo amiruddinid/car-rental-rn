@@ -13,12 +13,10 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: { // kumpulan method untuk mengubah initial state secara synchronous
-        logout: (state, action) => {
-            state.data = null;
-            state.isLogin = false;
-            state.token = null;
-        },
-        resetState: (state) => initialState,
+        resetState: () => initialState,
+        setStateByName: (state, action) => {
+            state[action.payload.name] = action.payload.value;
+        }
     },
     extraReducers: (builder) => {
         //Post Login Reducer
@@ -56,6 +54,6 @@ export const userSlice = createSlice({
 });
 
 export const selectUser = (state) => state.user; // selector untuk mengambil state user
-export const { logout, resetState } = userSlice.actions; // action untuk logout
+export const { resetState, setStateByName } = userSlice.actions; // action untuk logout
 export { postLogin, getProfile }; // action untuk panggil api postLogin dan get Profile
 export default userSlice.reducer; // user reducer untuk di tambahkan ke store

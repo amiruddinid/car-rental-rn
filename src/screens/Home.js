@@ -5,7 +5,7 @@
  * @format
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
   FlatList,
   Image,
@@ -16,14 +16,14 @@ import {
   View,
 } from 'react-native';
 
-import axios from 'axios';
-
 import Button from '../components/Button';
 import Icon from 'react-native-vector-icons/Feather';
 import CarList from '../components/CarList';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '../redux/reducers/user';
+import { selectCars, getCars } from '../redux/reducers/cars';
 
 const COLORS = {
   primary: '#A43333',
@@ -43,43 +43,23 @@ const ButtonIcon = ({ icon, title }) => (
 
 function Home() {
   const navigation = useNavigation();
-  const [cars, setCars] = useState([])
-  const [user, setUser] = useState(null)
   const isDarkMode = useColorScheme() === 'dark';
-
-  const getUser = async () => {
-    try {
-      const res = await AsyncStorage.getItem('user')
-      setUser(JSON.parse(res));
-      console.log(res);
-    } catch (e) {
-      console.log(e);
-      setUser(null);
-    }
-  }
+  const dispatch = useDispatch()
+  const user = useSelector(selectUser);
+  const cars = useSelector(selectCars);
 
   const fetchCars = async () => {
-    try {
-      const res = await axios('http://192.168.100.2:3000/api/v1/cars')
-      console.log(res.data)
-      setCars(res.data)
-    } catch (e) {
-      console.log(e)
+    const page = 1;
+    if(!cars.data.length || page > cars.data?.page && cars.status === 'idle'){
+      dispatch(getCars(page))
     }
   }
-
-  useEffect(() => {
-    fetchCars()
-  }, [])
 
   useFocusEffect(
     useCallback(() => {
-      getUser()
-      return () => {
-        setUser(null)
-      };
+      fetchCars();
     }, [])
-  )
+  );
 
   const backgroundStyle = {
     // overflow: 'visible',
@@ -94,13 +74,13 @@ function Home() {
       />
       {/* end banner */}
       <FlatList
-        data={cars.data}
+        data={cars.data?.data}
         ListHeaderComponent={
           <>
             <View style={styles.header}>
               <View style={styles.headerContainer}>
                 <View>
-                  <Text style={styles.headerText}>Hi, {user ? user.fullname : 'Guest'}</Text>
+                  <Text style={styles.headerText}>Hi, {user ? user.data.fullname : 'Guest'}</Text>
                   <Text style={styles.headerTextLocation}>Your Location</Text>
                 </View>
                 <View >
@@ -140,6 +120,8 @@ function Home() {
             passengers={5}
             baggage={4}
             price={item.price}
+            onEndReached={fetchCars}
+            onEndReachedThreshold={0.8}
             onPress={() => navigation.navigate('Detail', {id: item.id})}
           />
         }

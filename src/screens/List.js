@@ -5,7 +5,7 @@
  * @format
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     FlatList,
     SafeAreaView,
@@ -15,6 +15,10 @@ import {
 import axios from 'axios';
 import CarList from '../components/CarList';
 import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '../redux/reducers/user';
+import { getCars, selectCars } from '../redux/reducers/cars';
+import { useFocusEffect } from '@react-navigation/native';
 
 const COLORS = {
     primary: '#A43333',
@@ -24,21 +28,23 @@ const COLORS = {
 }
 
 function List() {
-    const [cars, setCars] = useState([])
     const isDarkMode = useColorScheme() === 'dark';
+    const dispatch = useDispatch()
+    const user = useSelector(selectUser);
+    const cars = useSelector(selectCars);
 
-    useEffect(() => {
-        const fetchCars = async () => {
-            try {
-                const res = await axios('http://192.168.100.2:3000/api/v1/cars')
-                console.log(res.data)
-                setCars(res.data)
-            } catch (e) {
-                console.log(e)
-            }
+    const fetchCars = async () => {
+        const page = 1;
+        if(!cars.data.length || page > cars.data?.page && cars.status === 'idle'){
+          dispatch(getCars(page))
         }
-        fetchCars()
-    }, [])
+      }
+
+      useFocusEffect(
+        useCallback(() => {
+          fetchCars();
+        }, [])
+      );
 
     const backgroundStyle = {
         // overflow: 'visible',
@@ -53,7 +59,7 @@ function List() {
             />
             {/* end banner */}
             <FlatList
-                data={cars.data}
+                data={cars.data.data}
                 renderItem={({ item, index }) =>
                     <CarList
                         key={item.id}
@@ -62,6 +68,8 @@ function List() {
                         passengers={5}
                         baggage={4}
                         price={item.price}
+                        onEndReached={fetchCars}
+                        onEndReachedThreshold={0.8}
                     />
                 }
                 keyExtractor={item => item.id}

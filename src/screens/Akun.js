@@ -1,9 +1,9 @@
 import { View, Text, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Button from '../components/Button';
 import { useSelector, useDispatch } from 'react-redux';
-import { getProfile, selectUser, logout } from '../redux/reducers/user';
+import { getProfile, selectUser, resetState as logout } from '../redux/reducers/user';
 
 export default function Akun() {
     const navigation = useNavigation();

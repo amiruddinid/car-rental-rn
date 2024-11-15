@@ -6,7 +6,7 @@ import ModalPopup from '../components/Modal';
 import Icon from 'react-native-vector-icons/Feather';
 //redux
 import { useDispatch, useSelector } from 'react-redux';
-import { postLogin, selectUser, resetState } from '../redux/reducers/user';
+import { postLogin, selectUser, resetState, setStateByName } from '../redux/reducers/user';
 
 const initialFormState = {
   email: '',
@@ -33,15 +33,15 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    dispatch(resetState());
-  }, []);
-
-  useEffect(() => {
     if (user.status === 'success') {
       setModalVisible(true);
       setErrorMessage(null);
       setTimeout(() => {
         setModalVisible(false);
+        dispatch(setStateByName({
+          name: 'status',
+          value: 'idle',
+        }));
         navigation.navigate('HomeTabs', { screen: 'Profile' });
       }, 1000);
     } else if (user.status === 'failed') {
@@ -49,7 +49,8 @@ export default function SignIn() {
       setErrorMessage(user.message);
       setTimeout(() => {
         setModalVisible(false);
-      }, 2000)
+        dispatch(resetState());
+      }, 2000);
     }
   }, [navigation, user]);
 
