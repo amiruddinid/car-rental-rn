@@ -16,21 +16,16 @@ import {
   View,
 } from 'react-native';
 
-import Button from '../components/Button';
+import Button from '@components/Button';
 import Icon from 'react-native-vector-icons/Feather';
-import CarList from '../components/CarList';
-import FocusAwareStatusBar from '../components/FocusAwareStatusBar';
+import CarList from '@components/CarList';
+import FocusAwareStatusBar from '@components/FocusAwareStatusBar';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../redux/reducers/user';
-import { selectCars, getCars } from '../redux/reducers/cars';
-
-const COLORS = {
-  primary: '#A43333',
-  secondary: '#5CB85F',
-  darker: '#121212',
-  lighter: '#ffffff'
-}
+import { selectUser } from '@reducers/user';
+import { selectCars, getCars } from '@reducers/cars';
+import { COLORS } from '@constant';
+import GlobalModal from '@components/Modal/GlobalModal';
 
 const ButtonIcon = ({ icon, title }) => (
   <Button>
@@ -68,6 +63,7 @@ function Home() {
 
   return (
     <SafeAreaView style={backgroundStyle}>
+      <GlobalModal />
       <FocusAwareStatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={COLORS.primary}
@@ -80,7 +76,7 @@ function Home() {
             <View style={styles.header}>
               <View style={styles.headerContainer}>
                 <View>
-                  <Text style={styles.headerText}>Hi, {user ? user.data.fullname : 'Guest'}</Text>
+                  <Text style={styles.headerText}>Hi, {user.data ? user.data?.fullname : 'Guest'}</Text>
                   <Text style={styles.headerTextLocation}>Your Location</Text>
                 </View>
                 <View >

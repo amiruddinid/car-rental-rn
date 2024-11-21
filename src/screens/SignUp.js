@@ -2,7 +2,7 @@ import { KeyboardAvoidingView, View, Text, Image, TextInput, StyleSheet, ScrollV
 import React, { useEffect, useReducer, useState } from 'react'
 import Button from '../components/Button'
 import { Link, useNavigation } from '@react-navigation/native'
-import ModalPopup from '../components/Modal'
+import ModalPopup from '../components/Modal/Modal'
 import Icon from 'react-native-vector-icons/Feather';
 import axios from 'axios'
 

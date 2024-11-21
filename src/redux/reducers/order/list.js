@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCars, getCarsDetails } from "./api";
+import { getOrder, getOrderDetails } from "./api";
 
 const initialState = {
     data: [],
@@ -13,8 +13,8 @@ const initialState = {
     status: "idle",
 };
 
-const carSlice = createSlice({
-    name: "cars",
+const orderListSlice = createSlice({
+    name: "orderList",
     initialState,
     reducers: {
         setStateByName: (state, { payload }) => {
@@ -26,39 +26,39 @@ const carSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(getCars.pending, (state, action) => {
+        builder.addCase(getOrder.pending, (state, action) => {
             state.status = 'loading';
         });
-        builder.addCase(getCars.fulfilled, (state, action) => {
+        builder.addCase(getOrder.fulfilled, (state, action) => {
             state.status = 'success';
             console.log(state.data)
             state.data = {...state.data, ...action.payload};
             // state.data['data'] = [...state.data?.data, ...action.payload.data];
         });
-        builder.addCase(getCars.rejected, (state, action) => {
+        builder.addCase(getOrder.rejected, (state, action) => {
             state.status = 'error';
             state.message = action.payload.data;
         });
 
-        builder.addCase(getCarsDetails.pending, (state, action) => {
+        builder.addCase(getOrderDetails.pending, (state, action) => {
             state.details.status = 'loading';
         });
-        builder.addCase(getCarsDetails.fulfilled, (state, action) => {
+        builder.addCase(getOrderDetails.fulfilled, (state, action) => {
             state.details.status = 'success';
             state.details.data = action.payload.data;
             state.details.id = action.payload.data.id;
             state.details.message = action.payload.message;
             // state.data['data'] = [...state.data?.data, ...action.payload.data];
         });
-        builder.addCase(getCarsDetails.rejected, (state, action) => {
+        builder.addCase(getOrderDetails.rejected, (state, action) => {
             state.status = 'error';
             state.details.message = action.payload;
         });
     },
 });
 
-export { getCars, getCarsDetails };
-export const selectCars = state => state.cars; //selector
-export const selectCarDetail = state => state.cars.details;
-export const { setStateByName, resetDetailsState } = carSlice.actions;
-export default carSlice.reducer;
+export { getOrder, getOrderDetails };
+export const selectOrderList = state => state.orderList; //selector
+export const selectOrderListDetail = state => state.orderList.details;
+export const { setStateByName, resetDetailsState } = orderListSlice.actions;
+export default orderListSlice.reducer;

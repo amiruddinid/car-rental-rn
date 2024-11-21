@@ -13,9 +13,10 @@ import Icon from 'react-native-vector-icons/Feather';
 import Markdown from 'react-native-markdown-display';
 import Button from '../components/Button';
 import { Row, Col } from '../components/Grid';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { formatCurrency } from '../utils/formatCurrency';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCarDetail, getCarsDetails, resetDetailsState } from '../redux/reducers/cars';
 
 const md = `## Include
   
@@ -33,28 +34,19 @@ const md = `## Include
 export default function Detail({ route }) {
     const navigation = useNavigation();
     const { id } = route.params;
+    const dispatch = useDispatch();
+    const carDetail = useSelector(selectCarDetail);
 
     const [isLoading, setIsLoading] = useState(true);
-    const [data, setData] = useState();
 
     useEffect(() => {
-        const getDetail = async () => {
-            try {
-                const res = await axios(`http://192.168.100.2:3000/api/v1/cars/${id}`)
-                setData(res.data.data);
-                setIsLoading(false);
-                console.log(res.data.data);
-            } catch (e) {
-                console.log(e);
-            }
-        };
-
-        if (id) {
-            getDetail();
+        dispatch(resetDetailsState())
+        if(id !== carDetail.id){
+            dispatch(getCarsDetails(id));
         }
     }, [id]);
 
-    if (isLoading) { return <ActivityIndicator />; }
+    if (carDetail.status === 'loading') { return <ActivityIndicator />; }
 
     return (
         <View style={styles.container}>
@@ -63,31 +55,32 @@ export default function Detail({ route }) {
             </Button>
             <ScrollView contentContainerStyle={styles.contentContainer}>
                 <View style={styles.heading}>
-                    <Text style={styles.title}>{data.name}</Text>
+                    <Text style={styles.title}>{carDetail.data?.name}</Text>
                     <Row style={styles.iconWrapper} gap={5}>
                         <Col style={styles.textIcon}>
                             <Icon size={14} name={'users'} color={'#8A8A8A'} />
-                            <Text style={styles.capacityText}>{data.seat}</Text>
+                            <Text style={styles.capacityText}>{carDetail.data?.seat}</Text>
                         </Col>
                         <Col style={styles.textIcon}>
                             <Icon size={14} name={'briefcase'} color={'#8A8A8A'} />
-                            <Text style={styles.capacityText}>{data.baggage}</Text>
+                            <Text style={styles.capacityText}>{carDetail.data?.baggage}</Text>
                         </Col>
                     </Row>
                     <Image
                         style={styles.image}
-                        source={{ uri: data.image }}
+                        source={{ uri: carDetail.data?.image }}
                         height={200}
                         width={200}
                     />
                 </View>
-                <Markdown style={styles.details}>{data.description.replace(/\\n/g,"\n")}</Markdown>
+                <Markdown style={styles.details}>{carDetail.data?.description?.replace(/\\n/g,"\n")}</Markdown>
             </ScrollView>
             <View style={styles.footer}>
-                <Text style={styles.price}>{formatCurrency.format(data.price || 0)}</Text>
+                <Text style={styles.price}>{formatCurrency.format(carDetail.data?.price || 0)}</Text>
                 <Button
                     color="#3D7B3F"
                     title="Lanjutkan Pembayaran"
+                    onPress={navigation.navigate('Order', { carId: carDetail.data?.id })}
                 />
             </View>
         </View>

@@ -10,6 +10,8 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import rootReducer from './reducers';
 import reactotron from '../../ReactotronConfig';
+import { setupAxiosInterceptors } from '../config/axios';
+
 
 const persistConfig = {
   key: 'root',
