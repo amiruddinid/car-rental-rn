@@ -26,6 +26,7 @@ import { selectUser } from '@reducers/user';
 import { selectCars, getCars } from '@reducers/cars';
 import { COLORS } from '@constant';
 import GlobalModal from '@components/Modal/GlobalModal';
+import GeoLoc from '../components/Geolocation';
 
 const ButtonIcon = ({ icon, title }) => (
   <Button>
@@ -77,7 +78,7 @@ function Home() {
               <View style={styles.headerContainer}>
                 <View>
                   <Text style={styles.headerText}>Hi, {user.data ? user.data?.fullname : 'Guest'}</Text>
-                  <Text style={styles.headerTextLocation}>Your Location</Text>
+                  <GeoLoc />
                 </View>
                 <View >
                   <Image style={styles.imageRounded} source={{ uri: "https://i.pravatar.cc/100" }} width={50} height={50} />

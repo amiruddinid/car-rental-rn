@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/Feather';
 //redux
 import { useDispatch, useSelector } from 'react-redux';
 import { postLogin, selectUser, resetState, setStateByName } from '../redux/reducers/user';
+import GoogleButton from '../components/GoogleButton';
 
 const initialFormState = {
   email: '',
@@ -87,6 +88,7 @@ export default function SignIn() {
               color={'#5CB85F'}
             />
           </View>
+          <GoogleButton />
           <View>
             <Text style={styles.authFooterText}>Don’t have an account? <Link screen="SignUp">Sign Up for free</Link></Text>
           </View>

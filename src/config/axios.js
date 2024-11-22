@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "@env";
-import { resetState } from "@reducers/user";
+import { resetState as logout } from "@reducers/user";
 import { navigate } from "./rootNavigation";
 // import showGlobalModal from '@Components/GlobalModal';
 
@@ -33,17 +33,13 @@ export const setupAxiosInterceptors = (store) => {
         return response;
     };
     const onResponseFail = error => {
-        console.log("response error", error);
-        console.log("response error", error.toJSON());
-
         const message = error.response?.data?.message || error.message;
-        console.log('message', message)
+        console.log('message', message);
         // showGlobalModal({
-            
         // })
         if (message === 'jwt expired') {
             console.log('jwt expired');
-            dispatch(resetState());
+            dispatch(logout());
             navigate('SignIn');
         }
         return Promise.reject(error);
