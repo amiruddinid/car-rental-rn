@@ -1,4 +1,4 @@
-package com.carrental
+package com.amier.carrental
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity
