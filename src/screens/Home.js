@@ -81,7 +81,7 @@ function Home() {
                   <GeoLoc />
                 </View>
                 <View >
-                  <Image style={styles.imageRounded} source={{ uri: "https://i.pravatar.cc/100" }} width={50} height={50} />
+                  <Image style={styles.imageRounded} source={{ uri: user.data ? user.data?.avatar : "https://i.pravatar.cc/100" }} width={50} height={50} />
                 </View>
               </View>
               {/* banner */}
