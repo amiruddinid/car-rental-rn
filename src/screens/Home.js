@@ -46,7 +46,7 @@ function Home() {
 
   const fetchCars = async () => {
     const page = 1;
-    if(!cars.data.length || page > cars.data?.page && cars.status === 'idle'){
+    if(page > cars.data?.page && cars.status === 'idle'){
       dispatch(getCars(page))
     }
   }
